@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
             # Collect and store OH temperatures
             print("Collect and store OH temperatures")
-            if os.environ.get("OW"):
+            if "OW" in os.environ:
                 API_key = os.environ['OW-API-KEY']
                 city_name = os.environ['OW-CITY']
                 base_url = "http://api.openweathermap.org/data/2.5/weather?"
