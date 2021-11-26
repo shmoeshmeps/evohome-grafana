@@ -47,3 +47,23 @@ The container should ping healthchecks.io after each successful run. If healthch
 - If you norse your Evohome username/password up, the influx db won't get created and grafana will cry. It should fix itself once you remember your login.
 - The dockerfile does a git clone of the master of watchforstock/evohome-client. This should not be considered a secure or sane way to do things.
 - There is no security on the Influxdb database.
+
+### PI Issues
+If you have issues doing the docker build where you get temporary error/ unable to fetch apk for alpine linux then you need to install new version of libseccomp2 like [this link](https://blog.samcater.com/fix-workaround-rpi4-docker-libseccomp2-docker-20/):
+
+```bash
+rpi ~$ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 04EE7237B7D453EC 648ACFD622F3D138
+echo 'deb http://httpredir.debian.org/debian buster-backports main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/debian-backports.list
+sudo apt update
+sudo apt-install libseccomp2 -t buster-backports
+sudo apt install libseccomp2 -t buster-backports
+```
+
+If you then get issues with write permissions for grafana, showing as "not writable" or something then as per [this link](https://github.com/grafana/grafana/issues/24595) you need to do modify permissions on the local folder that is mounted as a volume:
+
+```bash
+sudo chown -R 472:472 grafana-storage/
+```
+
+This will run persistently due to the restart unless stopped in the Dockerfile, so just make sure docker service starts under systemctl and you'll be golden.
