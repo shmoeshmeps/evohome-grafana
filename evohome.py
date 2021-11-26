@@ -9,9 +9,11 @@ import datetime
 print("Starting")
 username = os.environ['EH-USERNAME']
 password = os.environ['EH-PASSWORD']
+influxdb_host = os.environ['INFLUXDB_HOST']
 
-# influxdb_host = 'influxdb_host'
-influxdb_host = 'localhost'
+# influxdb_host = 'influxdb' # For docker
+# influxdb_host = 'localhost' # For local
+
 db = "EH-TEMPS"
 hotwater_setpoint_max = 55.0 # Cannot be pulled from API to manually set
 poll_interval = 300.0
