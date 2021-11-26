@@ -9,10 +9,12 @@ import datetime
 print("Starting")
 username = os.environ['EH-USERNAME']
 password = os.environ['EH-PASSWORD']
-# influxdb_host = os.environ['INFLUXDB_HOST']
-
-influxdb_host = 'influxdb' # For docker
+try:
+    influxdb_host = os.environ['INFLUXDB_HOST']
+except:
+    influxdb_host = 'influxdb' # For docker
 # influxdb_host = 'localhost' # For local
+print(f'influxdb is {influxdb_host}')
 
 db = "EH-TEMPS"
 hotwater_setpoint_max = 55.0 # Cannot be pulled from API to manually set
@@ -45,11 +47,17 @@ if __name__ == "__main__":
     all_ok = True
     # Connect to Influxdb
     print("Connecting to InfluxDB")
-    client = InfluxDBClient(host=influxdb_host, port=8086)
-    print(f"Connected. Checking existence of db {db}.")
-    client.create_database(db)
-    print(f"Database {db} found (or created). Getting DB properties.")
-    client.get_list_database()
+    try:
+        client = InfluxDBClient(host=influxdb_host, port=8086)
+        print(f"Connected. Checking existence of db {db}.")
+        client.create_database(db)
+        print(f"Database {db} found (or created). Getting DB properties.")
+        client.get_list_database()
+    except Exception as e:
+        print(e)
+        all_ok = False
+        print('Sleeping for 5 - that always helps...')
+        time.sleep(poll_interval - ((time.time() - starttime) % poll_interval))
     # print("Initialising evohome API")
     while all_ok:
         # Request evohome temperatures
@@ -123,6 +131,8 @@ if __name__ == "__main__":
         # except AuthenticationError as e:
         #     print("API overload error - sleeping 5 mins before retry")
         time.sleep(poll_interval - ((time.time() - starttime) % poll_interval))
+
+print('Exiting script')
 
 """
 If a TRV reaches it's setpoint, does it fully close or partially close?
