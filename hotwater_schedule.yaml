@@ -1,0 +1,18 @@
+---
+windows:
+  - 'on':
+      hrs: 6
+      mins: 00
+
+    'off':
+      hrs: 8
+      mins: 00
+
+  - 'on':
+      hrs: 16
+      mins: 30
+
+    'off':
+      hrs: 18
+      mins: 30
+temp: 55.0

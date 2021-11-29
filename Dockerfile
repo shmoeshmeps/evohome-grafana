@@ -6,6 +6,6 @@ RUN git clone https://github.com/watchforstock/evohome-client.git
 
 FROM python:3-alpine
 COPY --from=gitty evohome-client/ /evohome-client/
-RUN pip install ./evohome-client influxdb
+RUN pip install ./evohome-client influxdb pyyaml
 COPY evohome.py /tmp/
 CMD ["python", "-u", "/tmp/evohome.py"]
