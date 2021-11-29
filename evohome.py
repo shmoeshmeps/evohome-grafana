@@ -15,6 +15,8 @@ except:
     influxdb_host = 'influxdb' # For docker
 # influxdb_host = 'localhost' # For local
 print(f'influxdb is {influxdb_host}')
+print(f'username is {username}')
+# time.sleep(20)
 
 db = "EH-TEMPS"
 hotwater_setpoint_max = 55.0 # Cannot be pulled from API to manually set
@@ -70,11 +72,11 @@ if __name__ == "__main__":
             try:
                 eclient = EvohomeClient({username}, {password})
             except AuthenticationError as e:
-                if "invalid_grant" in e:
+                if "invalid_grant" in str(e):
                     print("invalid_grant when authenticating - check your credentials")
                     all_ok = False
                 else:
-                    if "attempt_limit_exceeded" in e:
+                    if "attempt_limit_exceeded" in str(e):
                         print("attempt_limit_exceeded - will try sleeping 5 mins before container restart")
                     else:
                         print(e)
@@ -110,9 +112,9 @@ if __name__ == "__main__":
 
 
             # Collect and store OH temperatures
-            if "OW" in os.environ:
+            if API_key := os.environ.get("OW-API-KEY"):
                 print("Collect and store outside weather temperatures")
-                API_key = os.environ['OW-API-KEY']
+                # API_key = os.environ['OW-API-KEY']
                 city_name = os.environ['OW-CITY']
                 base_url = "http://api.openweathermap.org/data/2.5/weather?"
                 Final_url = base_url + "q=" + city_name + "&appid=" + API_key + "&units=metric"
@@ -122,8 +124,8 @@ if __name__ == "__main__":
                 client.write_points([{"measurement":"ext-Temperatures","fields":{'ext-temp': temp}}], database=db)
 
             # Inform Healthchecks.io
-            if "HEALTHCHECKS-IO" in os.environ:
-                healthchecks = os.environ['HEALTHCHECKS-IO']
+            if healthchecks := os.environ.get("HEALTHCHECKS-IO"):
+                # healthchecks = os.environ['HEALTHCHECKS-IO']
                 requests.get(healthchecks)
 
         # except ConnectionError as e:
@@ -132,7 +134,7 @@ if __name__ == "__main__":
         #     print("API overload error - sleeping 5 mins before retry")
         time.sleep(poll_interval - ((time.time() - starttime) % poll_interval))
 
-print('Exiting script')
+    print('Exiting script')
 
 """
 If a TRV reaches it's setpoint, does it fully close or partially close?

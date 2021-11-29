@@ -39,12 +39,15 @@ services:
       - evohome
     restart: unless-stopped
     environment:
-      - EH-USERNAME=wibble@email.address
-      - EH-PASSWORD=5up3r53cr3tp4ssw0rd1
-      - OW=true
-      - OW-API-KEY=123123123123
+      - OW=false
       - OW-CITY=London,uk
       - HEALTHCHECKS-IO=https://hc-ping.com/XXXX-YYYY-ZZZZ
+      - EH-USERNAME=${EH_USERNAME}
+      - EH-PASSWORD=${EH_PASSWORD}
+      - OW-API-KEY=${EH_OW_API_KEY}
+
+
+
 networks:
   evohome:
 volumes:

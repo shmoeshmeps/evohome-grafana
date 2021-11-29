@@ -8,4 +8,4 @@ FROM python:3-alpine
 COPY --from=gitty evohome-client/ /evohome-client/
 RUN pip install ./evohome-client influxdb
 COPY evohome.py /tmp/
-CMD ["python", "/tmp/evohome.py"]
+CMD ["python", "-u", "/tmp/evohome.py"]
