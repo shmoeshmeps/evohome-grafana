@@ -8,4 +8,5 @@ FROM python:3-alpine
 COPY --from=gitty evohome-client/ /evohome-client/
 RUN pip install ./evohome-client influxdb pyyaml
 COPY evohome.py /tmp/
+COPY hotwater_schedule.yaml /tmp/
 CMD ["python", "-u", "/tmp/evohome.py"]

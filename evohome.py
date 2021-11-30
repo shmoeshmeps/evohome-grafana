@@ -38,7 +38,10 @@ def parse_hw_windows_from_file(filename:str):
                 'endwin': datetime.datetime.now().replace(hour=endwin_hr, minute=endwin_min),
             },
         )
+        ehlog.debug(f'New window start {startwin_hr} hrs {startwin_min} mins')
+        ehlog.debug(f'New window end {endwin_hr} hrs {endwin_min} mins')
     hw_setpoint = parsed['temp']
+    ehlog.debug(f'HW temp set to {hw_setpoint}')
     return hw_windows, hw_setpoint
 
 if __name__ == "__main__":
@@ -73,12 +76,7 @@ if __name__ == "__main__":
         poll_interval = 300.0
         ehlog.warning(f"Failed grabbing poll interval from env var, using local default val {poll_interval} seconds")
 
-    try:
-        ehlog.debug(f"Grabbing HW schedule filename from env var")
-        hw_schedule_filename = os.environ['HW_SCHEDULED_FILENAME']
-    except KeyError:
-        hw_schedule_filename = "hotwater_schedule.yaml"
-        ehlog.warning(f"Failed grabbing hw sched filename from env var, using local default val {hw_schedule_filename}")
+    hw_schedule_filename = "tmp/hotwater_schedule.yaml"
 
 
     starttime = time.time()
@@ -130,7 +128,7 @@ if __name__ == "__main__":
             try:
                 hw_windows, hotwater_setpoint_max = parse_hw_windows_from_file(hw_schedule_filename) # Updates windows to be the hours of today
             except Exception as e:
-                ehlog.error(f"Failed to get hot water windows and setpoint from file. Setpoing set to {hotwater_setpoint}")
+                ehlog.error(f"Failed to get hot water windows and setpoint from file. Setpoint set to {hotwater_setpoint}")
             else:
                 for hw_window in hw_windows:
                     if now > hw_window['startwin'] and now < hw_window['endwin']:
