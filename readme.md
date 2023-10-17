@@ -9,7 +9,17 @@ A docker-compose stack to collect temperature data from your Honeywell Evohome s
 Build the container:
 `docker build -t evohome .`
 
-modify the env vars in the docker-compose file for evohome to match your evohome login
+## Credentials
+Your credentials and all dependent info should be declared as environment variables that are then used by docker-compose. 
+
+Replace the following with your vars and paste this in to create an .env file
+```bash
+rm .env -f
+echo EH_USERNAME=your_evohome_email_here >> .env
+echo EH_PASSWORD=your_password_here >> .env
+echo EH_OW_API_KEY=your_API_key_here >> .env
+echo OW-CITY=London,uk >> .env
+```
 
 Then start docker-compose:
 `docker-compose up -d`
