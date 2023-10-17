@@ -6,25 +6,26 @@ A docker-compose stack to collect temperature data from your Honeywell Evohome s
 
 
 # Get started
-Build the container:
-`docker build -t evohome .`
-
 ## Credentials
 Your credentials and all dependent info should be declared as environment variables that are then used by docker-compose. 
 
-Replace the following with your vars and paste this in to create an .env file
+Replace the following with your vars and paste this in to bash to create an .env file
 ```bash
 rm .env -f
 echo EH_USERNAME=your_evohome_email_here >> .env
 echo EH_PASSWORD=your_password_here >> .env
+echo Option to add an Openweather API key here for external temp fetching
 echo EH_OW_API_KEY=your_API_key_here >> .env
 echo OW-CITY=London,uk >> .env
 ```
+## Building and starting the container
+Build the container from the Dockerfile, tagging it as evohome:
+`docker build -t evohome .`
 
 Then start docker-compose:
 `docker-compose up -d`
 
-This creates the database and grafana, it tells grafana how to connect to the database and provisions a basic graph showing requested and actual temperatures for each room.
+This creates the database and grafana containers. It tells grafana how to connect to the database and provisions a basic graph showing requested and actual temperatures for each room.
 
 Once it looks like it's settled, go to localhost:3000
 The default username/pass for grafana is admin/admin
